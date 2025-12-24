@@ -179,6 +179,53 @@ h2 {
   transform: translateY(-1px);
 }
 
+.inline-viewer {
+  overflow: hidden;
+}
+
+.viewer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.viewer-title {
+  font-weight: 650;
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.viewer-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.viewer-frame-wrap {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.viewer-frame {
+  display: block;
+  width: 100%;
+  height: min(70vh, 720px);
+  border: 0;
+  background: transparent;
+}
+
+@media (max-width: 640px) {
+  .viewer-frame {
+    height: min(68vh, 640px);
+  }
+}
+
 .project-title {
   font-weight: 650;
 }
