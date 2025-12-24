@@ -21,12 +21,35 @@ function setPre(id, value) {
 }
 
 function openLink(url) {
+  // 目标：不要“新窗口/新标签页”打开。
+  // - 浏览器：同窗口跳转
+  // - Telegram：内部链接仍在 WebApp 内跳转；外部 http(s) 交给 tg.openLink
   const tg = getTg();
-  if (tg && typeof tg.openLink === "function") {
-    tg.openLink(url);
+
+  let parsed;
+  try {
+    parsed = new URL(url, window.location.href);
+  } catch {
+    window.location.assign(url);
     return;
   }
-  window.open(url, "_blank", "noopener,noreferrer");
+
+  const isHttp = parsed.protocol === "http:" || parsed.protocol === "https:";
+  const isSameOrigin = parsed.origin === window.location.origin;
+  const isInternal = !isHttp || isSameOrigin;
+
+  if (isInternal) {
+    window.location.assign(parsed.href);
+    return;
+  }
+
+  if (tg && typeof tg.openLink === "function") {
+    tg.openLink(parsed.href);
+    return;
+  }
+
+  // 非 Telegram 且为外部 http(s)：同窗口跳转
+  window.location.assign(parsed.href);
 }
 
 function setThemeVars(vars) {
