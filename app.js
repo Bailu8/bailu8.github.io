@@ -49,6 +49,52 @@ function setThemeVars(vars) {
   });
 }
 
+function openInline(url, title) {
+  const viewer = document.getElementById("inline-viewer");
+  const frame = document.getElementById("viewer-frame");
+  const viewerTitle = document.getElementById("viewer-title");
+  const viewerOpen = document.getElementById("viewer-open");
+  const viewerClose = document.getElementById("viewer-close");
+  const viewerHint = document.getElementById("viewer-hint");
+
+  if (!viewer || !frame || !viewerTitle || !viewerOpen || !viewerClose || !viewerHint) {
+    openLink(url);
+    return;
+  }
+
+  viewer.hidden = false;
+  viewerHint.hidden = true;
+  viewerTitle.textContent = title ? `预览：${title}` : "链接预览";
+
+  // 同窗口打开：直接在当前 WebView 导航
+  viewerOpen.onclick = () => openLink(url);
+  viewerClose.onclick = () => {
+    frame.src = "about:blank";
+    viewer.hidden = true;
+  };
+
+  // 尝试 iframe 内联。很多外站会禁止被嵌入（X-Frame-Options/CSP），这种情况用户会看到空白。
+  // 浏览器跨域下无法可靠检测阻止原因，这里用“加载超时”给出提示。
+  let loaded = false;
+  const timeoutId = window.setTimeout(() => {
+    if (!loaded) viewerHint.hidden = false;
+  }, 1200);
+
+  frame.onload = () => {
+    loaded = true;
+    window.clearTimeout(timeoutId);
+  };
+
+  try {
+    const parsed = new URL(url, window.location.href);
+    frame.src = parsed.href;
+  } catch {
+    frame.src = url;
+  }
+
+  viewer.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
 function applyTelegramTheme(tg) {
   const tp = tg?.themeParams || {};
 
@@ -111,7 +157,8 @@ function init() {
     el.addEventListener("click", () => {
       const url = el.getAttribute("data-link");
       if (!url) return;
-      openLink(url);
+      const title = (el.textContent || "").trim();
+      openInline(url, title);
     });
   });
 }
