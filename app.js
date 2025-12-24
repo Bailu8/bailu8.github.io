@@ -21,35 +21,24 @@ function setPre(id, value) {
 }
 
 function openLink(url) {
-  // 目标：不要“新窗口/新标签页”打开。
-  // - 浏览器：同窗口跳转
-  // - Telegram：内部链接仍在 WebApp 内跳转；外部 http(s) 交给 tg.openLink
+  // 目标：不新开窗口/不新开标签。
+  // 说明：Telegram 的 tg.openLink 在部分客户端会“跳外部浏览器/新窗口”。
+  // 为了强制同窗口体验，这里优先使用当前 WebView 内导航（location.assign）。
   const tg = getTg();
 
-  let parsed;
+  // 特判：t.me 链接，能用 openTelegramLink 就用（仍不会新开浏览器标签）。
+  const isTelegramShortLink = /^https?:\/\/(t\.me|telegram\.me)\//i.test(url);
+  if (tg && isTelegramShortLink && typeof tg.openTelegramLink === "function") {
+    tg.openTelegramLink(url);
+    return;
+  }
+
   try {
-    parsed = new URL(url, window.location.href);
+    const parsed = new URL(url, window.location.href);
+    window.location.assign(parsed.href);
   } catch {
     window.location.assign(url);
-    return;
   }
-
-  const isHttp = parsed.protocol === "http:" || parsed.protocol === "https:";
-  const isSameOrigin = parsed.origin === window.location.origin;
-  const isInternal = !isHttp || isSameOrigin;
-
-  if (isInternal) {
-    window.location.assign(parsed.href);
-    return;
-  }
-
-  if (tg && typeof tg.openLink === "function") {
-    tg.openLink(parsed.href);
-    return;
-  }
-
-  // 非 Telegram 且为外部 http(s)：同窗口跳转
-  window.location.assign(parsed.href);
 }
 
 function setThemeVars(vars) {
