@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Telegram Mini App Demo</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <header class="header">
+        <h1 id="page-title">个人主页</h1>
+        <p id="page-subtitle" class="muted">一个放在 Telegram 里的迷你个人站。</p>
+      </header>
+
+      <section class="card">
+        <div class="hero">
+          <div class="avatar" aria-hidden="true"></div>
+          <div class="hero-text">
+            <div class="hero-name" id="display-name">白陆🦌</div>
+            <div class="hero-meta muted" id="display-meta">后端 / 前端 / 全栈 · 城市 · 可远程</div>
+            <p class="hero-bio" id="display-bio">
+              我专注于把想法快速落地：从产品原型到上线交付。擅长工程化、性能优化与可维护架构。
+            </p>
+            <div class="chips" id="tag-chips">
+              <span class="chip">TypeScript</span>
+              <span class="chip">Node.js</span>
+              <span class="chip">React</span>
+              <span class="chip">PostgreSQL</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>个人技能</h2>
+        <div class="two-col">
+          <div>
+            <div class="label">编程语言</div>
+            <ul class="list">
+              <li>TypeScript / JavaScript</li>
+              <li>Python</li>
+              <li>Go（了解）</li>
+            </ul>
+          </div>
+          <div>
+            <div class="label">技术方向</div>
+            <ul class="list">
+              <li>Web 前端：React / Vite / 性能优化</li>
+              <li>服务端：Node.js / REST / Webhook</li>
+              <li>工程化：CI/CD、代码规范、可观测性</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>联系我</h2>
+        <div class="row">
+          <button class="btn" data-link="https://t.me/yourname">Telegram</button>
+          <button class="btn" data-link="mailto:you@example.com">Email</button>
+          <button class="btn btn-primary" data-link="https://github.com/yourname">GitHub</button>
+        </div>
+        <p class="muted small">在 Telegram 内会用 <span class="mono">openLink</span> 打开外部链接。</p>
+      </section>
+
+      <footer class="footer muted">
+        <span id="env-hint">环境：检测中…</span>
+      </footer>
+    </main>
+
+    <!-- Telegram WebApp SDK（由 Telegram 注入/提供） -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
